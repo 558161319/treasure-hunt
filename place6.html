@@ -15,6 +15,8 @@
     .progress-fill{background:#e6b17e;width:100%;height:8px;border-radius:20px;}
     .story-box{background:#fef9ef;padding:1.2rem;border-left:5px solid #e6b17e;margin:1.5rem 0;border-radius:12px;}
     .clue-box{background:#eef2fa;padding:1rem;border-radius:20px;margin:1.5rem 0;text-align:center;font-weight:bold;}
+    .btn-finish{background:#1e3a5f;color:white;border:none;padding:12px 28px;border-radius:40px;font-size:1rem;cursor:pointer;margin-top:1rem;width:100%;}
+    .btn-finish:hover{background:#e6b17e;color:#1e3a5f;}
     .footer{background:#1e3a5f;color:#bbd4f0;text-align:center;padding:1rem;flex-shrink:0;margin-top:auto;}
     @media (max-width:600px){.container{padding:1rem;}.header{flex-direction:column;gap:0.5rem;}}
   </style>
@@ -32,21 +34,31 @@
       <p><strong>📜 History:</strong> The Iron Pagoda, built in 1049 during the Northern Song Dynasty, is a 13-story glazed brick pagoda standing 55 meters tall. Despite its name, it is made of dark brown bricks that resemble iron. It has survived floods, earthquakes, and wars, standing as a testament to Kaifeng's glorious past. Henan University students often visit it for inspiration.</p>
     </div>
     <div class="clue-box">
-      🎉 <strong>Congratulations!</strong> You have completed all 6 locations. Now go to the certificate page to claim your award.
+      🎉 <strong>Congratulations!</strong> You have completed all 6 locations. Click the button below to get your certificate.
     </div>
+    <button class="btn-finish" id="finishBtn">🏆 Get Your Certificate</button>
   </div>
 </div>
-<div class="footer"><p>All done! Scan the final QR code (or click below) to get your certificate.</p></div>
+<div class="footer"><p>Well done! You are a true explorer.</p></div>
 <script>
   function resetAndRestart(){ if(confirm('Reset all progress?')){ localStorage.clear(); location.href='index.html'; } }
-  let expected = parseInt(localStorage.getItem('nextExpected'));
-  if (isNaN(expected)) expected = 1;
-  if (expected !== 6) {
-    alert('Please scan the locations in order. You need to complete the Old Library first.');
-    location.href = 'index.html';
-  } else {
-    localStorage.setItem('nextExpected', '7');
+  let completed = JSON.parse(localStorage.getItem('completed') || '[]');
+  let nextExpected = localStorage.getItem('nextExpected');
+  if (nextExpected === null) { alert('Please start from the main page.'); location.href = 'index.html'; }
+  const currentId = '6';
+  if (!completed.includes(currentId)) {
+    if (nextExpected === currentId) {
+      completed.push(currentId);
+      localStorage.setItem('completed', JSON.stringify(completed));
+      localStorage.setItem('nextExpected', String(parseInt(currentId) + 1));
+    } else {
+      alert(`You must scan locations in order. Expected location ${nextExpected}, but you opened ${currentId}. Please go back.`);
+      location.href = 'index.html';
+    }
   }
+  document.getElementById('finishBtn').addEventListener('click', () => {
+    window.location.href = 'finish.html';
+  });
 </script>
 </body>
 </html>
