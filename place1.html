@@ -15,9 +15,13 @@
     .progress-fill{background:#e6b17e;width:16%;height:8px;border-radius:20px;}
     .story-box{background:#fef9ef;padding:1.2rem;border-left:5px solid #e6b17e;margin:1.5rem 0;border-radius:12px;}
     .clue-box{background:#eef2fa;padding:1rem;border-radius:20px;margin:1.5rem 0;text-align:center;font-weight:bold;}
+    .btn-scan{background:#1e3a5f;color:white;border:none;padding:12px 28px;border-radius:40px;font-size:1rem;cursor:pointer;margin-top:1rem;width:100%;}
+    .btn-scan:hover{background:#e6b17e;color:#1e3a5f;}
     .footer{background:#1e3a5f;color:#bbd4f0;text-align:center;padding:1rem;flex-shrink:0;margin-top:auto;}
+    #reader{width:100%;max-width:500px;margin:1rem auto;display:none;}
     @media (max-width:600px){.container{padding:1rem;}.header{flex-direction:column;gap:0.5rem;}}
   </style>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 <div class="header">
@@ -34,20 +38,66 @@
     <div class="clue-box">
       🔍 <strong>Next clue:</strong> Walk straight ahead from the gate. You will see a grand building with a traditional Chinese roof and Western columns. It once hosted important events during the war. Find the Grand Auditorium.
     </div>
+    <button class="btn-scan" id="scanNextBtn">📷 Scan Next Location (Grand Auditorium)</button>
+    <div id="reader"></div>
   </div>
 </div>
-<div class="footer"><p>Follow the order – scan the next QR code when you find it</p></div>
+<div class="footer"><p>After reading, use the button to scan the QR code at the next spot.</p></div>
 <script>
   function resetAndRestart(){ if(confirm('Reset all progress?')){ localStorage.clear(); location.href='index.html'; } }
-  // 自动打卡逻辑：期望编号为1
-  let expected = parseInt(localStorage.getItem('nextExpected'));
-  if (isNaN(expected)) expected = 1;
-  if (expected !== 1) {
-    alert('You must start from the South Gate (Location 1). Please go to the starting point.');
+
+  // 自动打卡逻辑
+  let completed = JSON.parse(localStorage.getItem('completed') || '[]');
+  let nextExpected = localStorage.getItem('nextExpected');
+  if (nextExpected === null) {
+    alert('Please start from the main page.');
     location.href = 'index.html';
-  } else {
-    // 打卡成功，将下一个期望编号设为2
-    localStorage.setItem('nextExpected', '2');
+  }
+  const currentId = '1';
+  if (!completed.includes(currentId)) {
+    if (nextExpected === currentId) {
+      completed.push(currentId);
+      localStorage.setItem('completed', JSON.stringify(completed));
+      localStorage.setItem('nextExpected', String(parseInt(currentId) + 1));
+    } else {
+      alert(`You must scan locations in order. Expected location ${nextExpected}, but you opened ${currentId}. Please go back.`);
+      location.href = 'index.html';
+    }
+  }
+
+  // 扫码去下一站
+  const scanBtn = document.getElementById('scanNextBtn');
+  const readerDiv = document.getElementById('reader');
+  let html5QrCode = null;
+  const nextExpectedUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'place2.html';
+
+  scanBtn.addEventListener('click', () => {
+    if (html5QrCode) {
+      html5QrCode.stop().then(() => {
+        html5QrCode.clear();
+      }).catch(console.log);
+    }
+    readerDiv.style.display = 'block';
+    html5QrCode = new Html5Qrcode("reader");
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
+  });
+
+  function onScanSuccess(decodedText, decodedResult) {
+    if (decodedText === nextExpectedUrl || decodedText.endsWith('/place2.html')) {
+      window.location.href = 'place2.html';
+    } else {
+      alert('Incorrect QR code. Please scan the QR code at the Grand Auditorium (place2).');
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
+        }).catch(console.log);
+      }
+    }
+  }
+
+  function onScanError(errorMessage) {
+    console.log(errorMessage);
   }
 </script>
 </body>
