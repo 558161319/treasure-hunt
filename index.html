@@ -22,7 +22,7 @@
 <body>
 <div class="header">
   <h2>🏛️ Henan University Heritage Quest</h2>
-  <p>Explore history · Follow clues · Earn a certificate</p>
+  <p>Explore history · Scan QR codes in order · Earn a certificate</p>
 </div>
 <div class="container">
   <div class="hero-card">
@@ -37,7 +37,7 @@
       <span class="badge">6. Iron Pagoda</span>
     </div>
     <button class="btn-start" id="startBtn">✨ Start the Journey ✨</button>
-    <p style="font-size:0.8rem; margin-top:1rem;">⚠️ You must follow the order. Progress is saved automatically.</p>
+    <p style="font-size:0.8rem; margin-top:1rem;">⚠️ You must scan the QR codes in the correct order. Progress is saved automatically.</p>
   </div>
 </div>
 <div class="footer">
@@ -45,10 +45,16 @@
 </div>
 <script>
   document.getElementById('startBtn').addEventListener('click', function(){
-    localStorage.setItem('progress', 'start');
+    // 重置进度：下一个期望的地点编号为1
+    localStorage.setItem('nextExpected', '1');
     window.location.href = 'place1.html';
   });
-  window.resetGame = function(){ localStorage.clear(); alert('Progress reset. Start from beginning.'); window.location.href='index.html'; };
+  // 全局重置函数（可选，用于调试）
+  window.resetGame = function(){ 
+    localStorage.clear(); 
+    alert('Progress reset. Start from beginning.'); 
+    window.location.href='index.html'; 
+  };
 </script>
 </body>
 </html>
