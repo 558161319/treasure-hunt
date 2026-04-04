@@ -15,7 +15,6 @@
     .progress-fill{background:#e6b17e;width:16%;height:8px;border-radius:20px;}
     .story-box{background:#fef9ef;padding:1.2rem;border-left:5px solid #e6b17e;margin:1.5rem 0;border-radius:12px;}
     .clue-box{background:#eef2fa;padding:1rem;border-radius:20px;margin:1.5rem 0;text-align:center;font-weight:bold;}
-    .btn-next{background:#1e3a5f;color:white;border:none;padding:10px 28px;border-radius:40px;font-size:1rem;cursor:pointer;margin-top:1rem;}
     .footer{background:#1e3a5f;color:#bbd4f0;text-align:center;padding:1rem;flex-shrink:0;margin-top:auto;}
     @media (max-width:600px){.container{padding:1rem;}.header{flex-direction:column;gap:0.5rem;}}
   </style>
@@ -35,14 +34,21 @@
     <div class="clue-box">
       🔍 <strong>Next clue:</strong> Walk straight ahead from the gate. You will see a grand building with a traditional Chinese roof and Western columns. It once hosted important events during the war. Find the Grand Auditorium.
     </div>
-    <button class="btn-next" id="nextBtn">➡ Go to Grand Auditorium</button>
   </div>
 </div>
-<div class="footer"><p>Follow the order – do not skip</p></div>
+<div class="footer"><p>Follow the order – scan the next QR code when you find it</p></div>
 <script>
   function resetAndRestart(){ if(confirm('Reset all progress?')){ localStorage.clear(); location.href='index.html'; } }
-  if(localStorage.getItem('progress') !== 'start'){ alert('Please start from the main page.'); location.href='index.html'; }
-  document.getElementById('nextBtn').onclick = function(){ localStorage.setItem('progress', 'place1'); location.href='place2.html'; };
+  // 自动打卡逻辑：期望编号为1
+  let expected = parseInt(localStorage.getItem('nextExpected'));
+  if (isNaN(expected)) expected = 1;
+  if (expected !== 1) {
+    alert('You must start from the South Gate (Location 1). Please go to the starting point.');
+    location.href = 'index.html';
+  } else {
+    // 打卡成功，将下一个期望编号设为2
+    localStorage.setItem('nextExpected', '2');
+  }
 </script>
 </body>
 </html>
