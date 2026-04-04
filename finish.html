@@ -27,7 +27,8 @@
   <div class="footer">Henan University · Office of Cultural Heritage</div>
 </div>
 <script>
-  if(localStorage.getItem('progress') !== 'place6') {
+  let expected = parseInt(localStorage.getItem('nextExpected'));
+  if (isNaN(expected) || expected !== 7) {
     alert('You must complete all 6 treasure hunt locations first!');
     location.href = 'index.html';
   }
