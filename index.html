@@ -3,24 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Henan University Campus Treasure Hunt</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Segoe UI',Roboto,Georgia,serif;background:#eef2f5;color:#1a2a3a;min-height:100vh;display:flex;flex-direction:column;}
-    .header{background:#1e3a5f;color:white;padding:0.8rem 2rem;text-align:center;flex-shrink:0;}
-    .container{flex:1;display:flex;align-items:center;justify-content:center;max-width:1000px;width:100%;margin:0 auto;padding:2rem 1.5rem;}
-    .hero-card{background:white;border-radius:28px;box-shadow:0 12px 28px rgba(0,0,0,0.08);padding:clamp(1.5rem,5vw,2.5rem);width:100%;text-align:center;}
-    h1{color:#1e3a5f;margin-bottom:1rem;}
-    .btn-scan{background:#e6b17e;border:none;padding:12px 32px;font-size:1.2rem;font-weight:bold;border-radius:40px;color:#1e3a5f;cursor:pointer;margin:1.5rem 0;transition:0.2s;width:80%;}
-    .btn-scan:hover{background:#c78d4a;color:white;}
-    .locations{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin:1.5rem 0;}
-    .badge{background:#f0f4f8;padding:0.5rem 1rem;border-radius:40px;font-size:0.9rem;}
-    .footer{background:#1e3a5f;color:#bbd4f0;text-align:center;padding:1rem;flex-shrink:0;margin-top:auto;}
-    #reader{width:100%;max-width:500p<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Henan University Minglun Campus Treasure Hunt</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
@@ -96,81 +78,6 @@
     }
   }
   function onScanError(err) {}
-</script>
-</body>
-</html>x;margin:1rem auto;display:none;}
-    @media (max-width:600px){.container{padding:1rem;}}
-  </style>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-</head>
-<body>
-<div class="header">
-  <h2>🏛️ Henan University Heritage Quest</h2>
-  <p>Scan QR codes in order · Explore history · Earn a certificate</p>
-</div>
-<div class="container">
-  <div class="hero-card">
-    <h1>🗺️ Campus Treasure Hunt</h1>
-    <p>Click the button below to scan the QR code at the <strong>South Gate</strong> (first location).<br>Then follow the clues and keep scanning at each spot.</p>
-    <div class="locations">
-      <span class="badge">1. South Gate</span>
-      <span class="badge">2. Grand Auditorium</span>
-      <span class="badge">3. Building No.6</span>
-      <span class="badge">4. Building No.7</span>
-      <span class="badge">5. Old Library</span>
-      <span class="badge">6. Iron Pagoda</span>
-    </div>
-    <button class="btn-scan" id="scanStartBtn">📷 Scan First Location</button>
-    <div id="reader"></div>
-    <p style="font-size:0.8rem; margin-top:1rem;">⚠️ You must scan in the correct order. Progress is saved automatically.</p>
-  </div>
-</div>
-<div class="footer">
-  <p>© Henan University | Office of Cultural Heritage</p>
-</div>
-<script>
-  // 初始化进度：清空旧数据，设置起点
-  localStorage.clear();
-  localStorage.setItem('completed', JSON.stringify([]));
-  localStorage.setItem('nextExpected', '1');
-
-  const scanBtn = document.getElementById('scanStartBtn');
-  const readerDiv = document.getElementById('reader');
-  let html5QrCode = null;
-
-  scanBtn.addEventListener('click', () => {
-    if (html5QrCode) {
-      html5QrCode.stop().then(() => {
-        html5QrCode.clear();
-      }).catch(console.log);
-    }
-    readerDiv.style.display = 'block';
-    html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
-  });
-
-  function onScanSuccess(decodedText, decodedResult) {
-    // 检查扫描到的URL是否是 place1.html
-    const expectedUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'place1.html';
-    if (decodedText === expectedUrl || decodedText.endsWith('/place1.html')) {
-      // 跳转到第一站
-      window.location.href = 'place1.html';
-    } else {
-      alert('Please scan the QR code at the South Gate (place1).');
-      // 重新开始扫描
-      if (html5QrCode) {
-        html5QrCode.stop().then(() => {
-          html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
-        }).catch(console.log);
-      }
-    }
-  }
-
-  function onScanError(errorMessage) {
-    // 忽略普通错误
-    console.log(errorMessage);
-  }
 </script>
 </body>
 </html>
