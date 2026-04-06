@@ -7,83 +7,62 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Segoe UI',Roboto,Georgia,serif;background:#eef2f5;color:#1a2a3a;min-height:100vh;display:flex;flex-direction:column;}
-    
     .header{background:#1e3a5f;color:white;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;flex-shrink:0;}
     .reset-btn{background:#e6b17e;border:none;padding:5px 14px;border-radius:40px;cursor:pointer;color:#1e3a5f;}
-    
     .container{flex:1;display:flex;align-items:center;max-width:1000px;width:100%;margin:0 auto;padding:2rem 1.5rem;}
     .card{background:white;border-radius:28px;box-shadow:0 12px 28px rgba(0,0,0,0.08);padding:clamp(1.5rem,5vw,2.5rem);width:100%;}
-    
     .progress-bar{background:#e0e7ef;height:8px;border-radius:20px;margin-bottom:1.5rem;}
     .progress-fill{background:#e6b17e;width:60%;height:8px;border-radius:20px;}
-
-    /* 官网级图片样式 */
-    .spot-image {
-      width: 100%;
-      max-height: 280px;
-      object-fit: cover;
-      border-radius: 20px;
-      margin: 1.2rem 0;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
-    }
-    .spot-image:hover {
-      transform: scale(1.02);
-    }
-
+    .spot-image{width:100%;max-height:280px;object-fit:cover;border-radius:20px;margin:1.2rem 0;box-shadow:0 8px 20px rgba(0,0,0,0.1);}
     .story-box{background:#fef9ef;padding:1.2rem;border-left:5px solid #e6b17e;margin:1.5rem 0;border-radius:12px;line-height:1.6;}
     .clue-box{background:#eef2fa;padding:1rem;border-radius:20px;margin:1.5rem 0;text-align:center;font-weight:bold;}
     .btn-scan{background:#1e3a5f;color:white;border:none;padding:12px 28px;border-radius:40px;font-size:1rem;cursor:pointer;margin-top:1rem;width:100%;}
     .btn-scan:hover{background:#e6b17e;color:#1e3a5f;}
-    
     .footer{background:#1e3a5f;color:#bbd4f0;text-align:center;padding:1rem;flex-shrink:0;margin-top:auto;}
     #reader{width:100%;max-width:500px;margin:1rem auto;display:none;}
-    
-    @media (max-width:600px){
-      .container{padding:1rem;}
-      .header{flex-direction:column;gap:0.5rem;}
-      .spot-image { max-height: 200px; }
-    }
+    @media (max-width:600px){.container{padding:1rem;}.header{flex-direction:column;gap:0.5rem;}.spot-image{max-height:200px;}}
   </style>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
-
 <body>
 <div class="header">
   <div class="logo">🏛️ HENU Quest</div>
   <button class="reset-btn" onclick="resetAndRestart()">⟳ Restart</button>
 </div>
-
 <div class="container">
   <div class="card">
     <div class="progress-bar"><div class="progress-fill"></div></div>
     <h1>📍 6. Imperial Examination Stone Steles</h1>
-
-    <!-- 图片：标题下方，官网质感 -->
-    <img src="./images/贡院碑2.jpg" class="spot-image" alt="Imperial Examination Stone Steles">
-
+    <img src="./images/贡院碑2.jpg" class="spot-image" alt="Imperial Examination Stone Steles" onerror="this.style.display='none'">
     <div class="story-box">
-      <p><strong>📜 Introduction:</strong> The Imperial Examination Stone Steles of Henan University consists of two ancient stone tablets from the Qing Dynasty. They respectively record the renovation of the Henan Imperial Examination Hall during the Yongzheng period and the reconstruction during the Daoguang period. This place was once the examination venue for the imperial examinations in Henan during the Qing Dynasty, and it was also the venue for the last two imperial examinations in the end of the imperial examination system. It witnessed the end of the thousand-year imperial examination system and holds significant historical value.</p>
+      <p><strong>📜 Introduction:</strong> The Imperial Examination Stone Steles of Henan University consists of two ancient stone tablets from the Qing Dynasty. They respectively record the renovation of the Henan Imperial Examination Hall during the Yongzheng period and the reconstruction during the Daoguang period. This place was once the examination venue for the imperial examinations in Henan during the Qing Dynasty, and it was also the venue for the last two imperial examinations at the end of the imperial examination system. It witnessed the end of the thousand-year imperial examination system and holds significant historical value.</p>
     </div>
-    
     <div class="clue-box">
       🔍 <strong>Next clue:</strong> Walk to the modern Yifu New Library.
     </div>
-
     <button class="btn-scan" id="scanNextBtn">📷 Scan Next Location</button>
     <div id="reader"></div>
   </div>
 </div>
-
 <div class="footer"><p>Scan the QR code at the next location in order.</p></div>
 
 <script>
-  function resetAndRestart(){ if(confirm('Reset all progress?')){ localStorage.clear(); location.href='index.html'; } }
+  function resetAndRestart() { 
+    if (confirm('Reset all progress?')) { 
+      localStorage.clear(); 
+      location.href = 'index.html'; 
+    } 
+  }
+
+  // 进度管理
   let completed = JSON.parse(localStorage.getItem('completed') || '[]');
   let nextExpected = localStorage.getItem('nextExpected');
-  if (!nextExpected) { alert('Please start from the main page.'); location.href='index.html'; }
-  
+  if (!nextExpected) {
+    alert('Please start from the main page.');
+    location.href = 'index.html';
+  }
   const currentId = '6';
+  // 自动打卡（如果顺序正确且未打卡）
   if (!completed.includes(currentId) && nextExpected === currentId) {
     completed.push(currentId);
     localStorage.setItem('completed', JSON.stringify(completed));
@@ -93,18 +72,49 @@
   const scanBtn = document.getElementById('scanNextBtn');
   const readerDiv = document.getElementById('reader');
   let html5QrCode = null;
-  const nextPage = 'place7.html';
+  const expectedFileName = 'place7.html';  // 期望扫描到的文件名
 
   scanBtn.addEventListener('click', () => {
-    if(html5QrCode) html5QrCode.stop().then(()=>html5QrCode.clear()).catch(console.log);
+    if (html5QrCode) {
+      html5QrCode.stop().then(() => html5QrCode.clear()).catch(console.log);
+    }
     readerDiv.style.display = 'block';
     html5QrCode = new Html5Qrcode("reader");
-    const config = { fps:10, qrbox:{width:250,height:250} };
-    html5QrCode.start({facingMode:"environment"}, config, onSuccess, onError);
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
   });
 
-  function onSuccess(t){ if(t.includes(nextPage)) location.href=nextPage; else alert('Please scan the correct QR code!'); }
-  function onError(e){}
+  function onScanSuccess(decodedText) {
+    // 更可靠的匹配：提取URL的路径部分，检查是否以 expectedFileName 结尾或包含
+    let isMatch = false;
+    try {
+      const url = new URL(decodedText);
+      if (url.pathname.endsWith(expectedFileName) || url.pathname.includes(expectedFileName)) {
+        isMatch = true;
+      }
+    } catch(e) {
+      // 如果不是完整URL，直接检查字符串
+      if (decodedText.includes(expectedFileName)) {
+        isMatch = true;
+      }
+    }
+    if (isMatch) {
+      window.location.href = expectedFileName;
+    } else {
+      alert(`Incorrect QR code. Please scan the QR code of ${expectedFileName}.`);
+      // 重新开始扫描
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
+        }).catch(console.log);
+      }
+    }
+  }
+
+  function onScanError(err) {
+    // 忽略普通扫描错误
+    console.log(err);
+  }
 </script>
 </body>
 </html>
